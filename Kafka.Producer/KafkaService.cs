@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Text;
 using Confluent.Kafka;
 using Confluent.Kafka.Admin;
+using Kafka.Producer.Events;
 //using Kafka.Producer.Events;
 
 namespace Kafka.Producer
@@ -188,81 +189,81 @@ namespace Kafka.Producer
             }
         }
 
-        //internal async Task SendComplexMessageWithIntKey(string topicName)
-        //{
-        //    var config = new ProducerConfig() { BootstrapServers = "localhost:9094" };
+        internal async Task SendComplexMessageWithIntKey(string topicName)
+        {
+            var config = new ProducerConfig() { BootstrapServers = "localhost:9094" };
 
-        //    using var producer = new ProducerBuilder<int, OrderCreatedEvent>(config)
-        //        .SetValueSerializer(new CustomValueSerializer<OrderCreatedEvent>())
-        //        .Build();
-
-
-        //    foreach (var item in Enumerable.Range(1, 100))
-        //    {
-        //        var orderCreatedEvent = new OrderCreatedEvent()
-        //        { OrderCode = Guid.NewGuid().ToString(), TotalPrice = item * 100, UserId = item };
+            using var producer = new ProducerBuilder<int, OrderCreatedEvent>(config)
+                .SetValueSerializer(new CustomValueSerializer<OrderCreatedEvent>())
+                .Build();
 
 
-        //        var message = new Message<int, OrderCreatedEvent>()
-        //        {
-        //            Value = orderCreatedEvent,
-        //            Key = item,
-        //        };
-
-        //        var result = await producer.ProduceAsync(topicName, message);
+            foreach (var item in Enumerable.Range(1, 100))
+            {
+                var orderCreatedEvent = new OrderCreatedEvent()
+                { OrderCode = Guid.NewGuid().ToString(), TotalPrice = item * 100, UserId = item };
 
 
-        //        foreach (var propertyInfo in result.GetType().GetProperties())
-        //        {
-        //            Console.WriteLine($"{propertyInfo.Name} : {propertyInfo.GetValue(result)}");
-        //        }
+                var message = new Message<int, OrderCreatedEvent>()
+                {
+                    Value = orderCreatedEvent,
+                    Key = item,
+                };
 
-        //        Console.WriteLine("-----------------------------------");
-        //        await Task.Delay(10);
-        //    }
-        //}
+                var result = await producer.ProduceAsync(topicName, message);
 
 
-        //internal async Task SendComplexMessageWithIntKeyAndHeader(string topicName)
-        //{
-        //    var config = new ProducerConfig() { BootstrapServers = "localhost:9094" };
+                foreach (var propertyInfo in result.GetType().GetProperties())
+                {
+                    Console.WriteLine($"{propertyInfo.Name} : {propertyInfo.GetValue(result)}");
+                }
 
-        //    using var producer = new ProducerBuilder<int, OrderCreatedEvent>(config)
-        //        .SetValueSerializer(new CustomValueSerializer<OrderCreatedEvent>())
-        //        .Build();
-
-
-        //    foreach (var item in Enumerable.Range(1, 3))
-        //    {
-        //        var orderCreatedEvent = new OrderCreatedEvent()
-        //        { OrderCode = Guid.NewGuid().ToString(), TotalPrice = item * 100, UserId = item };
+                Console.WriteLine("-----------------------------------");
+                await Task.Delay(10);
+            }
+        }
 
 
-        //        var header = new Headers
-        //        {
-        //            { "correlation_id", Encoding.UTF8.GetBytes("123") },
-        //            { "version", Encoding.UTF8.GetBytes("v1") }
-        //        };
+        internal async Task SendComplexMessageWithIntKeyAndHeader(string topicName)
+        {
+            var config = new ProducerConfig() { BootstrapServers = "localhost:9094" };
 
-        //        var message = new Message<int, OrderCreatedEvent>()
-        //        {
-        //            Value = orderCreatedEvent,
-        //            Key = item,
-        //            Headers = header
-        //        };
-
-        //        var result = await producer.ProduceAsync(topicName, message);
+            using var producer = new ProducerBuilder<int, OrderCreatedEvent>(config)
+                .SetValueSerializer(new CustomValueSerializer<OrderCreatedEvent>())
+                .Build();
 
 
-        //        foreach (var propertyInfo in result.GetType().GetProperties())
-        //        {
-        //            Console.WriteLine($"{propertyInfo.Name} : {propertyInfo.GetValue(result)}");
-        //        }
+            foreach (var item in Enumerable.Range(1, 3))
+            {
+                var orderCreatedEvent = new OrderCreatedEvent()
+                { OrderCode = Guid.NewGuid().ToString(), TotalPrice = item * 100, UserId = item };
 
-        //        Console.WriteLine("-----------------------------------");
-        //        await Task.Delay(10);
-        //    }
-        //}
+
+                var header = new Headers
+                {
+                    { "correlation_id", Encoding.UTF8.GetBytes("123") },
+                    { "version", Encoding.UTF8.GetBytes("v1") }
+                };
+
+                var message = new Message<int, OrderCreatedEvent>()
+                {
+                    Value = orderCreatedEvent,
+                    Key = item,
+                    Headers = header
+                };
+
+                var result = await producer.ProduceAsync(topicName, message);
+
+
+                foreach (var propertyInfo in result.GetType().GetProperties())
+                {
+                    Console.WriteLine($"{propertyInfo.Name} : {propertyInfo.GetValue(result)}");
+                }
+
+                Console.WriteLine("-----------------------------------");
+                await Task.Delay(10);
+            }
+        }
 
 
         //internal async Task SendComplexMessageWithComplexKey(string topicName)
