@@ -8,9 +8,9 @@ Console.WriteLine("Kafka Producer");
 
 
 var kafkaService = new KafkaService();
-var topicName = "use-case-3-topic";
+var topicName = "mycluster-topic";
 //await kafkaService.CreateTopicRetryWithClusterAsync(topicName);
 await kafkaService.CreateTopicAsync(topicName);
-await kafkaService.SendComplexMessageWithIntKey(topicName);
+await kafkaService.SendComplexMessageWithIntKeyAndHeader(topicName);
 
 Console.ReadLine();

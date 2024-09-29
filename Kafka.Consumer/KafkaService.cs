@@ -134,97 +134,97 @@ namespace Kafka.Consumer
         }
 
 
-        //internal async Task ConsumeComplexMessageWithComplexKey(string topicName)
-        //{
-        //    var config = new ConsumerConfig()
-        //    {
-        //        BootstrapServers = "localhost:9094",
-        //        GroupId = "use-case-2-group-1",
-        //        AutoOffsetReset = AutoOffsetReset.Earliest
-        //    };
+        internal async Task ConsumeComplexMessageWithComplexKey(string topicName)
+        {
+            var config = new ConsumerConfig()
+            {
+                BootstrapServers = "localhost:9094",
+                GroupId = "use-case-2-group-1",
+                AutoOffsetReset = AutoOffsetReset.Earliest
+            };
 
-        //    var consumer = new ConsumerBuilder<MessageKey, OrderCreatedEvent>(config)
-        //        .SetValueDeserializer(new CustomValueDeserializer<OrderCreatedEvent>())
-        //        .SetKeyDeserializer(new CustomKeyDeserializer<MessageKey>())
-        //        .Build();
-        //    consumer.Subscribe(topicName);
+            var consumer = new ConsumerBuilder<MessageKey, OrderCreatedEvent>(config)
+                .SetValueDeserializer(new CustomValueDeserializer<OrderCreatedEvent>())
+                .SetKeyDeserializer(new CustomKeyDeserializer<MessageKey>())
+                .Build();
+            consumer.Subscribe(topicName);
 
-        //    while (true)
-        //    {
-        //        var consumeResult = consumer.Consume(5000);
+            while (true)
+            {
+                var consumeResult = consumer.Consume(5000);
 
-        //        if (consumeResult != null)
-        //        {
-        //            var messageKey = consumeResult.Message.Key;
+                if (consumeResult != null)
+                {
+                    var messageKey = consumeResult.Message.Key;
 
-        //            Console.WriteLine(
-        //                $"gelen mesaj(key)=> key1 :{messageKey.Key1}, key2:{messageKey.Key2}");
-
-
-        //            var orderCreatedEvent = consumeResult.Message.Value;
-
-        //            Console.WriteLine(
-        //                $"gelen mesaj(value) => {orderCreatedEvent.UserId} - {orderCreatedEvent.OrderCode} - {orderCreatedEvent.TotalPrice}");
-        //        }
-
-        //        await Task.Delay(10);
-        //    }
-        //}
+                    Console.WriteLine(
+                        $"gelen mesaj(key)=> key1 :{messageKey.Key1}, key2:{messageKey.Key2}");
 
 
-        //internal async Task ConsumeMessageWithTimestamp(string topicName)
-        //{
-        //    var config = new ConsumerConfig()
-        //    {
-        //        BootstrapServers = "localhost:9094",
-        //        GroupId = "group-1",
-        //        AutoOffsetReset = AutoOffsetReset.Earliest
-        //    };
+                    var orderCreatedEvent = consumeResult.Message.Value;
 
-        //    var consumer = new ConsumerBuilder<MessageKey, OrderCreatedEvent>(config)
-        //        .SetValueDeserializer(new CustomValueDeserializer<OrderCreatedEvent>())
-        //        .SetKeyDeserializer(new CustomKeyDeserializer<MessageKey>())
-        //        .Build();
-        //    consumer.Subscribe(topicName);
+                    Console.WriteLine(
+                        $"gelen mesaj(value) => {orderCreatedEvent.UserId} - {orderCreatedEvent.OrderCode} - {orderCreatedEvent.TotalPrice}");
+                }
 
-        //    while (true)
-        //    {
-        //        var consumeResult = consumer.Consume(5000);
-
-        //        if (consumeResult != null)
-        //        {
-        //            Console.WriteLine($"Message Timestamp : {consumeResult.Message.Timestamp.UtcDateTime}");
-        //        }
-
-        //        await Task.Delay(10);
-        //    }
-        //}
+                await Task.Delay(10);
+            }
+        }
 
 
-        //internal async Task ConsumeMessageFromSpecificPartition(string topicName)
-        //{
-        //    var config = new ConsumerConfig()
-        //    {
-        //        BootstrapServers = "localhost:9094",
-        //        GroupId = "group-1",
-        //        AutoOffsetReset = AutoOffsetReset.Earliest
-        //    };
+        internal async Task ConsumeMessageWithTimestamp(string topicName)
+        {
+            var config = new ConsumerConfig()
+            {
+                BootstrapServers = "localhost:9094",
+                GroupId = "group-1",
+                AutoOffsetReset = AutoOffsetReset.Earliest
+            };
 
-        //    var consumer = new ConsumerBuilder<Null, string>(config).Build();
-        //    //consumer.Subscribe(topicName);
-        //    consumer.Assign(new TopicPartition(topicName, new Partition(2)));
-        //    while (true)
-        //    {
-        //        var consumeResult = consumer.Consume(5000);
+            var consumer = new ConsumerBuilder<MessageKey, OrderCreatedEvent>(config)
+                .SetValueDeserializer(new CustomValueDeserializer<OrderCreatedEvent>())
+                .SetKeyDeserializer(new CustomKeyDeserializer<MessageKey>())
+                .Build();
+            consumer.Subscribe(topicName);
 
-        //        if (consumeResult != null)
-        //        {
-        //            Console.WriteLine($"Message Timestamp : {consumeResult.Message.Value}");
-        //        }
+            while (true)
+            {
+                var consumeResult = consumer.Consume(5000);
 
-        //        await Task.Delay(10);
-        //    }
-        //}
+                if (consumeResult != null)
+                {
+                    Console.WriteLine($"Message Timestamp : {consumeResult.Message.Timestamp.UtcDateTime}");
+                }
+
+                await Task.Delay(10);
+            }
+        }
+
+
+        internal async Task ConsumeMessageFromSpecificPartition(string topicName)
+        {
+            var config = new ConsumerConfig()
+            {
+                BootstrapServers = "localhost:9094",
+                GroupId = "group-1",
+                AutoOffsetReset = AutoOffsetReset.Earliest
+            };
+
+            var consumer = new ConsumerBuilder<Null, string>(config).Build();
+
+            consumer.Assign(new TopicPartition(topicName, new Partition(2)));
+            while (true)
+            {
+                var consumeResult = consumer.Consume(5000);
+
+                if (consumeResult != null)
+                {
+                    Console.WriteLine($"Message Timestamp : {consumeResult.Message.Value}");
+                }
+
+                await Task.Delay(10);
+            }
+        }
 
 
         internal async Task ConsumeMessageFromSpecificPartitionOffset(string topicName)
@@ -237,8 +237,7 @@ namespace Kafka.Consumer
             };
 
             var consumer = new ConsumerBuilder<Null, string>(config).Build();
-            //consumer.Subscribe(topicName);
-            consumer.Assign(new TopicPartitionOffset(topicName, 2, 0));
+            consumer.Assign(new TopicPartitionOffset(topicName, 2, 4));
             while (true)
             {
                 var consumeResult = consumer.Consume(5000);

@@ -45,15 +45,13 @@ namespace Kafka.Producer
 
             try
             {
-                // topic link : https://docs.confluent.io/platform/current/installation/configuration/topic-configs.html
 
                 TimeSpan day30Span = TimeSpan.FromDays(30);
 
 
                 var configs = new Dictionary<string, string>()
                 {
-                    //{"retention.bytes","10000"} // topic partition byte cinsinden 10kb
-                    //{ "retention.ms", "-1" } // ömür boyu kafka da kalır
+
                     { "retention.ms", day30Span.TotalMicroseconds.ToString() } // 30 gün
                 };
 
@@ -110,7 +108,6 @@ namespace Kafka.Producer
 
             try
             {
-                //https://docs.confluent.io/platform/current/installation/configuration/topic-configs.html#min-insync-replicas
                 var configs = new Dictionary<string, string>()
                 {
                     { "min.insync.replicas", "3" }
@@ -233,7 +230,7 @@ namespace Kafka.Producer
                 .Build();
 
 
-            foreach (var item in Enumerable.Range(1, 3))
+            foreach (var item in Enumerable.Range(1, 100))
             {
                 var orderCreatedEvent = new OrderCreatedEvent()
                 { OrderCode = Guid.NewGuid().ToString(), TotalPrice = item * 100, UserId = item };
@@ -266,77 +263,77 @@ namespace Kafka.Producer
         }
 
 
-        //internal async Task SendComplexMessageWithComplexKey(string topicName)
-        //{
-        //    var config = new ProducerConfig() { BootstrapServers = "localhost:9094" };
+        internal async Task SendComplexMessageWithComplexKey(string topicName)
+        {
+            var config = new ProducerConfig() { BootstrapServers = "localhost:9094" };
 
-        //    using var producer = new ProducerBuilder<MessageKey, OrderCreatedEvent>(config)
-        //        .SetValueSerializer(new CustomValueSerializer<OrderCreatedEvent>())
-        //        .SetKeySerializer(new CustomKeySerializer<MessageKey>())
-        //        .Build();
-
-
-        //    foreach (var item in Enumerable.Range(1, 3))
-        //    {
-        //        var orderCreatedEvent = new OrderCreatedEvent()
-        //        { OrderCode = Guid.NewGuid().ToString(), TotalPrice = item * 100, UserId = item };
+            using var producer = new ProducerBuilder<MessageKey, OrderCreatedEvent>(config)
+                .SetValueSerializer(new CustomValueSerializer<OrderCreatedEvent>())
+                .SetKeySerializer(new CustomKeySerializer<MessageKey>())
+                .Build();
 
 
-        //        var message = new Message<MessageKey, OrderCreatedEvent>()
-        //        {
-        //            Value = orderCreatedEvent,
-        //            Key = new MessageKey("key1 value", "key2 value"),
-        //        };
-
-        //        var result = await producer.ProduceAsync(topicName, message);
+            foreach (var item in Enumerable.Range(1, 3))
+            {
+                var orderCreatedEvent = new OrderCreatedEvent()
+                { OrderCode = Guid.NewGuid().ToString(), TotalPrice = item * 100, UserId = item };
 
 
-        //        foreach (var propertyInfo in result.GetType().GetProperties())
-        //        {
-        //            Console.WriteLine($"{propertyInfo.Name} : {propertyInfo.GetValue(result)}");
-        //        }
+                var message = new Message<MessageKey, OrderCreatedEvent>()
+                {
+                    Value = orderCreatedEvent,
+                    Key = new MessageKey("key1 value", "key2 value"),
+                };
 
-        //        Console.WriteLine("-----------------------------------");
-        //        await Task.Delay(10);
-        //    }
-        //}
+                var result = await producer.ProduceAsync(topicName, message);
 
 
-        //internal async Task SendMessageWithTimestamp(string topicName)
-        //{
-        //    var config = new ProducerConfig() { BootstrapServers = "localhost:9094" };
+                foreach (var propertyInfo in result.GetType().GetProperties())
+                {
+                    Console.WriteLine($"{propertyInfo.Name} : {propertyInfo.GetValue(result)}");
+                }
 
-        //    using var producer = new ProducerBuilder<MessageKey, OrderCreatedEvent>(config)
-        //        .SetValueSerializer(new CustomValueSerializer<OrderCreatedEvent>())
-        //        .SetKeySerializer(new CustomKeySerializer<MessageKey>())
-        //        .Build();
-
-
-        //    foreach (var item in Enumerable.Range(1, 3))
-        //    {
-        //        var orderCreatedEvent = new OrderCreatedEvent()
-        //        { OrderCode = Guid.NewGuid().ToString(), TotalPrice = item * 100, UserId = item };
+                Console.WriteLine("-----------------------------------");
+                await Task.Delay(10);
+            }
+        }
 
 
-        //        var message = new Message<MessageKey, OrderCreatedEvent>()
-        //        {
-        //            Value = orderCreatedEvent,
-        //            Key = new MessageKey("key1 value", "key2 value"),
-        //            //Timestamp = new Timestamp(new DateTime(2012,02,02))
-        //        };
+        internal async Task SendMessageWithTimestamp(string topicName)
+        {
+            var config = new ProducerConfig() { BootstrapServers = "localhost:9094" };
 
-        //        var result = await producer.ProduceAsync(topicName, message);
+            using var producer = new ProducerBuilder<MessageKey, OrderCreatedEvent>(config)
+                .SetValueSerializer(new CustomValueSerializer<OrderCreatedEvent>())
+                .SetKeySerializer(new CustomKeySerializer<MessageKey>())
+                .Build();
 
 
-        //        foreach (var propertyInfo in result.GetType().GetProperties())
-        //        {
-        //            Console.WriteLine($"{propertyInfo.Name} : {propertyInfo.GetValue(result)}");
-        //        }
+            foreach (var item in Enumerable.Range(1, 3))
+            {
+                var orderCreatedEvent = new OrderCreatedEvent()
+                { OrderCode = Guid.NewGuid().ToString(), TotalPrice = item * 100, UserId = item };
 
-        //        Console.WriteLine("-----------------------------------");
-        //        await Task.Delay(10);
-        //    }
-        //}
+
+                var message = new Message<MessageKey, OrderCreatedEvent>()
+                {
+                    Value = orderCreatedEvent,
+                    Key = new MessageKey("key1 value", "key2 value"),
+                    //Timestamp = new Timestamp(new DateTime(2012,02,02))
+                };
+
+                var result = await producer.ProduceAsync(topicName, message);
+
+
+                foreach (var propertyInfo in result.GetType().GetProperties())
+                {
+                    Console.WriteLine($"{propertyInfo.Name} : {propertyInfo.GetValue(result)}");
+                }
+
+                Console.WriteLine("-----------------------------------");
+                await Task.Delay(10);
+            }
+        }
 
 
         internal async Task SendMessageToSpecificPartition(string topicName)
@@ -430,26 +427,25 @@ namespace Kafka.Producer
 
         internal async Task SendMessageWithRetryToCluster(string topicName)
         {
-            Task.Run(async () =>
-            {
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-                while (true)
-                {
-                    TimeSpan timeSpan = TimeSpan.FromSeconds(Convert.ToInt32(stopwatch.Elapsed.TotalSeconds));
-                    Console.Write(timeSpan.ToString("c"));
-                    Console.Write('\r');
+            //Task.Run(async () =>
+            //{
+            //    Stopwatch stopwatch = new Stopwatch();
+            //    stopwatch.Start();
+            //    while (true)
+            //    {
+            //        TimeSpan timeSpan = TimeSpan.FromSeconds(Convert.ToInt32(stopwatch.Elapsed.TotalSeconds));
+            //        Console.Write(timeSpan.ToString("c"));
+            //        Console.Write('\r');
 
 
-                    await Task.Delay(1000);
-                }
-            });
+            //        await Task.Delay(1000);
+            //    }
+            //});
 
             var config = new ProducerConfig()
             {
                 BootstrapServers = "localhost:7000,localhost:7001,localhost:7002",
                 Acks = Acks.All,
-                //MessageTimeoutMs = 6000,
                 MessageSendMaxRetries = 6,
                 RetryBackoffMs = 2000,
                 RetryBackoffMaxMs = 2000
