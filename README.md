@@ -2,6 +2,11 @@
 
 Bu proje, **.NET Core** kullanarak bir Kafka Producer ve Consumer uygulamasını göstermektedir. Proje, Docker ve Kafka kullanılarak oluşturulmuştur ve çoklu broker desteği ile Kafka UI entegrasyonunu içermektedir.
 
+## Kullanılan Teknolojiler 
+- **Kafka:** Mesaj tabanlı iletişim için kullanılan dağıtık sistem.
+- **Docker & Docker Compose:** Kafka broker'larının ve Kafka UI'nin çalıştırılması için kullanılmıştır.
+- **Confluent Kafka Kütüphanesi:** .NET projelerinde Kafka ile iletişim sağlamak için kullanılan kütüphane.
+
 ## Gereksinimler
 
 - **Docker** ve **Docker Compose** bilgisayarınıza yüklü olmalıdır.
@@ -10,7 +15,7 @@ Bu proje, **.NET Core** kullanarak bir Kafka Producer ve Consumer uygulamasını
 
 ## Başlarken
 
-### 1. Repozitory'yi Klonlayın
+### 1. Repository'yi Klonlayın
 
 İlk olarak projeyi yerel bilgisayarınıza klonlayın.
 
